@@ -86,8 +86,7 @@
     justify-content: space-around;
     font-size: 16px;
     font-weight: 300;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding: 16px 40px;
     box-sizing: border-box;
 
 
@@ -104,17 +103,13 @@
         img {
             max-width: 100%;
         }
-
-        @media @large-1280 {
-            flex: 0 0 100%;
-        }
     }
 
 
     &__content {
         // flex: 0 0 50%;
-        padding-left: 50px;
-        padding-right: 50px;
+        padding-left: 2%;
+        padding-right: 2%;
         display: flex;
         order: 0;
         flex-direction: column;

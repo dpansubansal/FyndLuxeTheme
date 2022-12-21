@@ -3,28 +3,38 @@
     <!-- <div class="video-container" :class="getValueById('size')"> -->
     <div class="video-container">
       <video ref="mp4video" width="100%" :poster="getValueById('cover_url')" :autoplay="checkVideoAutoplay()"
-        :muted="settings.props.mute.value" :loop="settings.props.loop.value" :controls="checkVideoControls() ? false : true" playsinline
-        @pause="showOverlay = true" @ended="showOverlay = true" preload="auto" v-if="isMp4()">
+        :loop="settings.props.loop.value" :controls="!settings.props.controls.value" playsinline
+        @pause="showOverlay = true" :muted="checkVideoAutoplay()" @play="showOverlay = false"
+        @ended="showOverlay = true" preload="auto" v-if="isMp4()">
         <source :src="settings.props.video_url.value" type="video/mp4" allowfullscreen />
       </video>
-      <!-- <div class="yt-container" v-else-if="isYoutube()">
+      <video ref="GDvideo" width="100%" :poster="getValueById('cover_url')" :autoplay="checkVideoAutoplay()"
+        :loop="settings.props.loop.value" :controls="!settings.props.controls.value" playsinline
+        @pause="showOverlay = true" :muted="checkVideoAutoplay()" @play="showOverlay = false"
+        @ended="showOverlay = true" preload="auto" v-else-if="isGoogleDrive()">
+        <source :src="getGDVideoID(settings.props.video_url.value)" type="video/mp4" allowfullscreen />
+      </video>
+      <div class="yt-container" v-else-if="isYoutube()">
         <div class="yt-video" ref="ytVideo" :id="'yt-video-' + getYTVideoID(settings.props.video_url.value)"
           :data-videoid="getYTVideoID(settings.props.video_url.value)" :data-videometa="JSON.stringify(settings.props)"
           allowfullscreen></div>
-      </div> -->
-      <div id="video_overlay" ref="video_overlay" class="overlay animated fadeIn" v-show="showOverlay">
-        <div v-if="
-          settings.props.cover_url.value
-        " class="overlay__image"
-          :style="`background: #ccc url(${getValueById('cover_url')}) center center / cover no-repeat;`"></div>
-        <!-- <div v-if="checkOverlaySize('container')" class="overlay__color"
-          :style="`background-color:black; opacity: 0.6 `"></div> -->
+      </div>
+
+
+      <div id="video_overlay" ref="video_overlay" class="overlay">
+        <div id="hide_on_play">
+          <div v-if="(getValueById('cover_url').length > 0 && showOverlay)" class="overlay__image"
+            :style="`background: #ccc url(${getValueById('cover_url')}) center center / cover no-repeat;`">
+          </div>
+        </div>
         <div class="overlay__content center-center">
-          <div class="overlay__color"
-            :style="`background-color:black ; opacity:0.6`"></div>
+          <div class="overlay__color" :style="`background-color:black ; opacity:0.6`"></div>
           <div class="overlay__content--text">
-            <div @click="playVideo" class="play-button">
-              <svg-wrapper :svg_src="'play'"></svg-wrapper>
+            <div>
+              <div @click="playMyVideo" id="play_button" style="justify-content: center;" class="play-button"
+                v-show="showOverlay">
+                <svg-wrapper :svg_src="'play'"></svg-wrapper>
+              </div>
             </div>
             <div class="overlay__text" v-if="
               settings.props.heading.value || settings.props.description.value
@@ -62,7 +72,7 @@
       "id": "autoplay",
       "default": false,
       "label": "Autoplay",
-      "info":"Check to enable autoplay (Video will be muted if autoplay is active)"
+      "info":"Check to enable autoplay"
     },
     {
       "type": "checkbox",
@@ -78,14 +88,6 @@
       "label": " Play Video in Loop",
       "info":"Uncheck to stop play video in loop"
     },
-    {
-      "type": "checkbox",
-      "id": "mute",
-      "default": true,
-      "label": "Mute Audio",
-      "info":"Uncheck to unmute the video"
-    },
-   
     {
       "type": "text",
       "id": "heading",
@@ -124,7 +126,7 @@ export default {
     settings: function (newVal, oldVal) {
       if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
         this.render = false;
-        this.showOverlay = !newVal?.props?.autoplay?.value;
+        //this.showOverlay = !newVal?.props?.autoplay?.value;
         if (this.isYoutube(newVal.props.video_url.value)) {
           this.removeYTScript();
         }
@@ -141,8 +143,6 @@ export default {
 
   },
   beforeMount() {
-    this.showOverlay =
-      !this.getValueById("autoplay");
   },
   mounted() {
     if (this.isYoutube()) {
@@ -223,6 +223,18 @@ export default {
       }
       return false;
     },
+    isGoogleDrive(url = this.getValueById("video_url")) {
+      if (!url) {
+        return false;
+      }
+      let urlObj = new URL(url);
+      if (
+        urlObj.host.includes("drive.google.com")
+      ) {
+        return true;
+      }
+      return false;
+    },
     getYTVideoID(url) {
       let urlObj = new URL(url);
       let searchParams = urlObj.searchParams;
@@ -230,6 +242,17 @@ export default {
       if (urlObj.host.includes("youtu.be")) {
         v = urlObj.pathname.split("/").pop();
       }
+      return v;
+    },
+    getGDVideoID(url) {
+      let urlObj = new URL(url);
+      console.log("urlObj is ", urlObj);
+      let v = urlObj.pathname.split("/");
+      console.log("after split by / v is ", v);
+      v=v[v.indexOf("d")+1];
+      console.log("val of v before gd is",v);
+      v="https://drive.google.com/uc?export=download&id="+v;
+      console.log("val of v after gd is",v);
       return v;
     },
     onYouTubeIframeAPIReady() {
@@ -248,13 +271,14 @@ export default {
         players[videoID] = {};
 
         let videoMeta = JSON.parse(node.dataset.videometa);
-        let qautoplay = videoMeta.autoplay.value,qcontrols = videoMeta.controls.value ? 1 : 0;
-        //qmute = videoMeta.autoplay.value;
+        console.log("hey videometa", videoMeta);
+        let qautoplay = videoMeta.autoplay.value ? 1 : 0,
+          qcontrols = videoMeta.controls.value ? 0 : 1,
+          qloop = videoMeta.loop.value ? 1 : 0;
+        console.log("qautoplay qcontrols qloop is ", qautoplay, qcontrols, qloop);
+
 
         players[videoID].onReady = function (e) {
-          //if (qmute) {
-            //e.target.mute();
-          //}
           if (qautoplay) {
             e.target.playVideo();
           }
@@ -262,14 +286,18 @@ export default {
         players[videoID].onStateChange = function (event) {
           var p = window.players;
           if (event.data == YT.PlayerState.PLAYING) {
-            document.getElementById("video_overlay").style.display = "none";
+            //document.getElementById("video_overlay").style.display = "flex";  // none changed to flex  //working state
+            document.getElementById("play_button").style.display = "none";  // none changed to flex  //working state
+            document.getElementById("hide_on_play").style.display = "none";  // none changed to flex  //working state
           }
 
           if (event.data == YT.PlayerState.PAUSED) {
-            document.getElementById("video_overlay").style.display = "flex";
+            //document.getElementById("video_overlay").style.display = "flex";
+            document.getElementById("play_button").style.display = "flex"; // none changed to flex  //working state
+            document.getElementById("hide_on_play").style.display = "flex"; // none changed to flex  //working state
           }
 
-          if (event.data == YT.PlayerState.ENDED) {
+          if (event.data == YT.PlayerState.ENDED && qloop === 1) {
             p[videoID].inst.seekTo(0);
             p[videoID].inst.playVideo();
           }
@@ -282,8 +310,7 @@ export default {
             autoplay: qautoplay,
             controls: qcontrols,
             modestbranding: 1,
-            mute: qmute,
-            loop: 1,
+            loop: qloop,
             fs: 0,
             cc_load_policty: 0,
             iv_load_policy: 3,
@@ -300,38 +327,39 @@ export default {
       this.showOverlay = false;
       this.$refs.mp4video.play();
     },
-    playYT() {
+    playGD() {
       this.showOverlay = false;
-      this.$refs.video_overlay.style.display = "none";
+      this.$refs.GDvideo.play();
+    },
+    playYT() {
+      this.showOverlay = true; // false changed to true
+      this.$refs.video_overlay.style.display = "flex"; // none changed to flex
       let videoID = this.$refs.ytVideo.dataset.videoid;
       var p = window.players;
       p[videoID].inst.playVideo();
     },
-    playVideo() {
+    playMyVideo() {
       if (this.isMp4()) {
         this.playMp4();
+      }  else if (this.isGoogleDrive()) {
+        this.playGD();
       } else {
         this.playYT();
       }
     },
-  
+
     checkVideoAutoplay() {
-      // returns true if either Autoplay or Video in Background is selected
+
       return this.getValueById("autoplay");
     },
-    checkVideoMute() {
-      // returns true if either Autoplay or Video in Background is selected
-      return this.checkVideoAutoplay();
-    },
     checkVideoControls() {
-      //returns false if video controls are disabled or Video in Background is selected
       if (this.getValueById("controls"))
         return true;
 
       return false;
     },
     getValueById(id) {
-      return this.settings?.props?.[id]?.value || "";
+      return this.settings?.props?.[id]?.value;
     },
   },
 };
