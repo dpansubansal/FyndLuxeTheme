@@ -59,6 +59,39 @@
             }
           },
           "page": "cart-landing"
+        },
+        {
+          "page": "collection-listing",
+          "settings": {
+            "props": {
+              "desc_position": "top",
+              "title": true,
+              "image1": "https://cdn.pixelbin.io/v2/falling-surf-7c8bb8/fyndnp/wrkr/addsale/company/13778/applications/638461beb061b2d548f8617f/theme/pictures/free/original/theme-image-1673601622073.png",
+              "image2": "https://cdn.pixelbin.io/v2/falling-surf-7c8bb8/fyndnp/wrkr/addsale/company/13778/applications/638461beb061b2d548f8617f/theme/pictures/free/original/theme-image-1672806531780.png",
+              "button_link": ""
+            }
+          }
+        },
+        {
+          "page": "collections",
+          "settings": {
+            "props": {
+              "title": "xyz",
+              "items_per_row": 7,
+              "button_link": "https://dipanshu-dev.hostx1.de/collection/classic-one123",
+              "image1": "https://cdn.pixelbin.io/v2/falling-surf-7c8bb8/fyndnp/wrkr/addsale/company/13778/applications/638461beb061b2d548f8617f/theme/pictures/free/original/theme-image-1673609650265.png",
+              "image2": "https://cdn.pixelbin.io/v2/falling-surf-7c8bb8/fyndnp/wrkr/addsale/company/13778/applications/638461beb061b2d548f8617f/theme/pictures/free/original/theme-image-1673609650266.png"
+            }
+          }
+        },
+        {
+          "page": "categories",
+          "settings": {
+            "props": {
+              "items_per_row": 4,
+              "heading": "heyyy"
+            }
+          }
         }
       ],
       "global_config": {
@@ -79,19 +112,19 @@
             "palette": {
               "general_setting": {
                 "theme": {
-                  "page_background": "#F3F3ED",
-                  "theme_accent": "#E1D0C8"
+                  "page_background": "#d75656",
+                  "theme_accent": "#a82929"
                 },
                 "text": {
-                  "text_heading": "#26201A",
-                  "text_body": "#3C3131",
+                  "text_heading": "#d40c0c",
+                  "text_body": "#f63737",
                   "text_label": "#7D7676",
                   "text_disabled": "#9C9C9C"
                 },
                 "button": {
-                  "button_primary": "#4E3F09",
-                  "button_secondary": "#FFFFFF",
-                  "button_link": "#B1655B"
+                  "button_primary": "#000000",
+                  "button_secondary": "#000000",
+                  "button_link": "#4499FF"
                 },
                 "sale_discount": {
                   "sale_badge_background": "#FFFFFF",
@@ -108,7 +141,7 @@
                 "footer": {
                   "footer_background": "#2C231E",
                   "footer_bottom_background": "#231812",
-                  "footer_text": "#D9D9D9",
+                  "footer_text": "#FFFFFF",
                   "footer_link_body": "#FFFFFF",
                   "footer_icon": "#FFFFFF"
                 }
@@ -131,13 +164,16 @@
                   "info_text": "#D28F51"
                 }
               }
+            },
+            "cart": {
+              "enable_single_page_checkout": false
             }
           }
         },
         "custom": {
           "props": {
             "header_bg_color": "#ffffff",
-            "header_text_color": "#000000",
+            "header_text_color": "#cb2020",
             "header_border_color": "#e1e1e1",
             "header_icon_color": "#000000",
             "header_cart_notification_bg_color": "#e8a76c",
@@ -154,7 +190,7 @@
             "button_tertiary_hover_color": "#000000",
             "button_tertiary_hover_text_color": "#ffffff",
             "text_heading_link_color": "#000000",
-            "text_body_color": "#000000",
+            "text_body_color": "#0b0909",
             "text_price_color": "#000000",
             "text_sale_price_color": "#fb406b",
             "text_strikethrough_price_color": "#9b9b9b",
@@ -272,6 +308,9 @@
                   "info_text": "#D28F51"
                 }
               }
+            },
+            "cart": {
+              "enable_single_page_checkout": false
             }
           }
         },
@@ -410,6 +449,9 @@
                   "info_text": "#D28F51"
                 }
               }
+            },
+            "cart": {
+              "enable_single_page_checkout": false
             }
           }
         },

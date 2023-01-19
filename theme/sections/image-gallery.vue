@@ -2,9 +2,9 @@
   <div class="section-wrapper full-width-section">
     <div class="gallery-container">
       <div class="card-container">
-        <div class="top-items">
+        <div class="top-items section_padding">
           <div class="title-block">
-            <div :style="'color:' + global_config.props.text_heading_link_color" class="section-heading"
+            <div :style="'color:' + global_config.props.text_heading_link_color" class="section-heading font_head"
               v-if="
               (settings.props.title.value && settings.props.title.value.length > 0 && settings.props.layout.value !== 'horizontal1' && settings.props.layout.value !== 'horizontal2')">
               {{ settings.props.title.value }}
@@ -13,43 +13,40 @@
           </div>
           <template v-if="settings.blocks.length > 0">
             <div class="grid6" v-if="settings.props.layout.value === 'grid'">
-              <div v-for="(e, i) in filterImages" :key="i">
-                <div class="grid6_item"><img :src="settings.blocks[i].props.image.value" /></div>
+              <div v-for="(e, i) in filterImages" :key="i" class="grid6_item">
+                <img :src="settings.blocks[i].props.image.value" />
               </div>
             </div>
-            <div class="grid5" v-if="settings.props.layout.value === 'grid5' && settings.blocks.length > 4">
-              <div class=" grid5_item grid5_item_1"><img :src="settings.blocks[0].props.image.value" /></div>
-              <div class=" grid5_item grid5_item_2"><img :src="settings.blocks[1].props.image.value" /></div>
-              <div class=" grid5_item"><img :src="settings.blocks[2].props.image.value" /></div>
-              <div class=" grid5_item"><img :src="settings.blocks[3].props.image.value" /></div>
-              <div class=" grid5_item"><img :src="settings.blocks[4].props.image.value" /></div>
-            </div>
+            <div class="grid5" v-if="settings.props.layout.value === 'grid5'">
 
+              <div v-for="(e, i) in filterImages5" :key="i" class="grid5_item" :class='["grid5_item_" + (i + 1)]'>
+                <img :src="settings.blocks[i].props.image.value" />
+              </div>
+            </div>
             <div
               v-if="(settings.props.layout.value === 'horizontal1') || (settings.props.layout.value === 'horizontal2')">
               <div class="glide-cont" :class="'glide' + _uid" ref="glide">
                 <div class="div1">
-                  <div class="stickyContent">
+                  <div class="stickyContent" :style="'color:' + global_config.props.text_heading_link_color">
                     {{ settings.props.title.value }}
                   </div>
                   <div data-glide-el="track" class="glide__track">
                     <div class="glide__slides" :class="{ 'ssr-slides-box': !checkisBrowser() && !isMounted }">
                       <div class="glide__slide" :class="index % 2 === 0 ? 'evenSlide' : 'oddSlide'"
                         v-for="(block, index) in settings.blocks" :key="index">
-                        <gallery-item v-if="settings.props.layout.value === 'horizontal1'" :asp_ratio="'1'" :ishover="'hoverPls'"
-                          :block="block" class="glideBlock"></gallery-item>
-                        <gallery-item v-else :block="block" :asp_ratio="'3/4'" class="glideBlock" :ishover="'hoverPls'"></gallery-item>
+                        <gallery-item v-if="settings.props.layout.value === 'horizontal1'" :asp_ratio="'1'"
+                          :ishover="'hoverPls'" :block="block" class="glideBlock"></gallery-item>
+                        <gallery-item v-else :block="block" :asp_ratio="'3/4'" class="glideBlock"
+                          :ishover="'hoverPls'"></gallery-item>
                       </div>
                     </div>
                   </div>
 
                 </div>
                 <div class="div2">
-                  <div class="glide__bullets" data-glide-el="controls[nav]"
-                    v-if="settings.blocks.length > count_row">
+                  <div class="glide__bullets" data-glide-el="controls[nav]" v-if="settings.blocks.length > count_row">
                     <button class="glide__bullet" :data-glide-dir="'=' + entry"
-                      v-for="(entry, index) in glidePaginate(settings.blocks.length, count_row)"
-                      :key="index"></button>
+                      v-for="(entry, index) in glidePaginate(settings.blocks.length, count_row)" :key="index"></button>
                   </div>
                   <div class="arrows" v-if="
                     settings.blocks.length > 0 &&
@@ -237,9 +234,9 @@
     }
   }
 
-  .prev-btn {
-    //margin-right: 22px;
-  }
+  //.prev-btn {
+  //margin-right: 22px;
+  //}
 
   .glide__bullets {
     position: relative;
@@ -250,7 +247,7 @@
     list-style: none;
     transform: translateX(0%);
     padding-right: 5%;
-    
+
     color: transparent;
     align-items: center;
 
@@ -351,20 +348,34 @@
   .grid6 {
     display: grid;
     grid-template-columns: auto auto auto;
-    gap: 2%;
+    gap: 24px;
     align-items: center;
-    padding: 0% 7%;
+    padding: 0% 60px;
+
+    @media screen and (max-width: 768px) {
+      gap: 16px;
+      padding: 0% 40px;
+    }
 
     @media screen and (max-width: 480px) {
       grid-template-columns: auto auto;
+      gap: 14px;
+      padding: 0% 16px;
     }
   }
 
+  .grid6_item {
+    // interrupting aspect-ratio
+    height: 100%;
+    width: 100%;
+  }
 
   .grid6_item>img {
-    max-height: 100%;
-    max-width: 100%;
+    //max-height: 100%;
+    //max-width: 100%;
     aspect-ratio: 1;
+    width: 100%;
+    height: 100%;
   }
 
 
@@ -373,19 +384,42 @@
   .grid5 {
     display: grid;
     grid-template-columns: 60% auto auto;
-    gap: 2%;
+    gap: 20px;
     align-items: center;
-    padding: 0% 5%;
+    padding: 0% 52px;
+
   }
 
-  .grid5>.grid5_item {}
+  .grid5>.grid5_item {
+    width: 100%;
+    height: 100%;
+  }
 
   .grid5_item_1 {
     grid-row-start: 1;
     grid-row-end: 3;
   }
 
-  @media screen and (max-device-width: 780px) {
+
+  @media only screen and (max-width: 768px) and (min-width: 480px) {
+    .grid5 {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      aspect-ratio: 1;
+    }
+
+    .grid5_item_1 {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    .grid5_item_2 {
+      grid-row-start: 1;
+      grid-row-end: 3;
+    }
+  }
+
+  @media screen and (max-device-width: 768px) {
     .grid5_item_1 {
 
       grid-row-start: 1;
@@ -396,6 +430,8 @@
 
     .grid5 {
       grid-template-columns: auto auto auto;
+      padding: 0% 40px;
+      gap: 16px;
 
     }
   }
@@ -403,26 +439,32 @@
   @media screen and (max-device-width: 480px) {
     .grid5 {
       grid-template-columns: auto auto;
+      padding: 0% 16px;
+      gap: 14px;
 
     }
   }
 
   .grid5_item>img {
-    max-height: 100%;
-    max-width: 100%;
+    //max-height: 500px;
+    width: 100%;
+    height: 100%; // interrupting aspect ratio
     aspect-ratio: 1;
   }
 
   .grid5_item_2>img {
     @media screen and (min-device-width: 481px) and (max-device-width: 768px) {
-      aspect-ratio: 1/2;
+      //aspect-ratio: 1/2;
       object-fit: cover;
     }
   }
 
   .grid5_item_1>img {
+    object-fit: cover;
+
     @media screen and (min-device-width: 768px) {
       aspect-ratio: 1.6;
+
     }
   }
 
@@ -440,8 +482,10 @@
   .grid6_item:hover>img,
   .grid5_item:hover>img {
     transform: scale(1.5);
+    transition-duration: 1s;
+    animation-timing-function: ease-in-out;
   }
- 
+
   //------------------------------------------------------------------------------
 
 
@@ -449,6 +493,7 @@
   .div1 {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     @media screen and (max-width: 480px) {
       flex-direction: column;
@@ -464,7 +509,12 @@
     font-weight: 400;
     font-size: 28px;
     line-height: 32px;
-    padding: 3%;
+    padding: 5% 2%;
+
+    @media screen and (max-width: 480px) {
+      //align-self: center;
+      width: unset;
+    }
   }
 
   .glide__track {
@@ -474,7 +524,17 @@
   .div2 {
     display: grid;
     grid-template-columns: auto 110px;
-    padding: 1% 3%;
+    padding-top: 31px;
+    ;
+    padding-left: 72px;
+    padding-right: 72px;
+
+    @media screen and (max-width: 768px) {
+      padding-top: 8px;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
   }
 
   .glideBlock {
@@ -484,11 +544,54 @@
     cursor: pointer;
     height: 100%;
     background-color: transparent;
-    padding: 2%;
+    padding-right: 16px;
+
+    @media screen and (max-width: 480px) {
+      padding-right: 12px;
+    }
   }
 
   .evenSlide {
-    margin-top: 1%;
+    margin-top: 4%;
+  }
+
+  .section_padding {
+    padding: 40px 0px;
+
+    @media screen and (max-width: 768px) {
+      padding: 32px 0px;
+    }
+
+    @media screen and (max-width: 480px) {
+      padding: 16px 0px;
+    }
+
+    .font_head {
+      //styleName: desktop/H3 - 28px Marcellus;
+      font-family: Marcellus;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 32px;
+      letter-spacing: -0.02em;
+      margin-bottom: 56px;
+
+      @media screen and (max-width: 768px) {
+        //styleName: Mobile/H3 - 24 px Marcellus;
+        font-family: Marcellus;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 28px;
+        letter-spacing: -0.02em;
+        text-align: center;
+        margin-bottom: 40px;
+
+      }
+
+      @media screen and (max-width: 768px) {
+        margin-bottom: 38px;
+      }
+
+    }
   }
 
 
@@ -523,6 +626,9 @@ export default {
   computed: {
     filterImages: function () {
       return this.settings.blocks.filter((item, index) => index < 6)
+    },
+    filterImages5: function () {
+      return this.settings.blocks.filter((item, index) => index < 5)
     }
   },
   mounted() {
@@ -536,7 +642,6 @@ export default {
         type: 'slider',
         startAt: 0,
         gap: 0,
-        bound:true,
         focusAt: 0,
         perView: 3,
         breakpoints: {
@@ -547,7 +652,7 @@ export default {
             perView: 2
           },
           480: {
-            perView: 1
+            perView: 1.5
           }
         }
       },

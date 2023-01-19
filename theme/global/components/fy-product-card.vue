@@ -1,53 +1,42 @@
 <template>
   <fdk-product-card class="product-card-container">
     <template slot-scope="productData">
-      <div
-        class="product-card animated fadeIn"
-        :class="{ 'disable-cursor': !product.sellable }"
-        @mouseover="showSizeContainer()"
-        @mouseleave="closeSizeContainer()"
-        @click="shouldRedirect()"
-      >
+      <div class="product-card animated fadeIn" :class="{ 'disable-cursor': !product.sellable }"
+        @mouseover="showSizeContainer()" @mouseleave="closeSizeContainer()" @click="shouldRedirect()">
         <div class="overlay" v-if="disable"></div>
         <fdk-accounts>
           <template slot-scope="accountsData">
-            <div
-              class="wishlist-container"
-              v-if="showWishlist && isMounted"
-              @click.prevent="
-                accountsData.is_logged_in
-                  ? onClickWishlist($event, productData, product)
-                  : accountsData.openLogin()
-              "
-            >
+            <div class="wishlist-container" v-if="showWishlist && isMounted" @click.prevent="
+              accountsData.is_logged_in
+                ? onClickWishlist($event, productData, product)
+                : accountsData.openLogin()
+            ">
               <div v-if="product.follow" style="text-align: center">
                 <!-- wishlist Pink -->
-                <svg-wrapper :svg_src="'wishlist-active'"></svg-wrapper>
+                <svg-wrapper v-if="!isWishListPage" :svg_src="'wishlist-active'"></svg-wrapper>
+
+                <svg  v-else width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 19L1 1M1 19L19 1" stroke="#26201A" stroke-width="1.5" />
+                </svg>
+
+
               </div>
               <div v-else style="text-align: center">
                 <!-- Wishlist Transparent -->
                 <svg-wrapper :svg_src="'wishlist'"></svg-wrapper>
               </div>
-            </div> </template
-        ></fdk-accounts>
+            </div>
+          </template></fdk-accounts>
 
         <div class="product-image">
-          <emerge-image
-            :src="imageUrl"
-            :alt="imageAlt"
-            class="imgClass"
-            :sources="[
-              { breakpoint: { min: 768 }, width: 360 },
-              { breakpoint: { min: 361 }, width: 360 },
-              { breakpoint: { max: 360 }, width: 360 },
-            ]"
-          />
+          <emerge-image :src="imageUrl" :alt="imageAlt" class="imgClass" :sources="[
+            { breakpoint: { min: 768 }, width: 360 },
+            { breakpoint: { min: 361 }, width: 360 },
+            { breakpoint: { max: 360 }, width: 360 },
+          ]" />
         </div>
       </div>
-      <div
-        class="discount-container"
-        v-if="product.discount && product.sellable"
-      >
+      <div class="discount-container" v-if="product.discount && product.sellable">
         <div class="discount">
           <div class="special-offer-text bold-xxxxs">
             {{ product.discount }}
@@ -66,53 +55,36 @@
         </div>
         <!-- End of Product Rating -->
         <div class="card-desc">
-          <h6
-            class="ukt-title"
-            :style="`color: ${global_config.props.text_heading_link_color}`"
-          >
+          <h6 class="ukt-title" :style="`color: ${global_config.props.text_heading_link_color}`">
             {{ product.brand.name }}
           </h6>
-          <div
-            class="info regular-xxxs"
-            :style="`color: ${global_config.props.text_heading_link_color}`"
-            :title="product.name"
-          >
+          <div class="info regular-xxxs" :style="`color: ${global_config.props.text_heading_link_color}`"
+            :title="product.name">
             {{ product.name }}
           </div>
           <div class="price">
             <span class="effective-price">
               <div>
                 <span class="regular-xs cl-Profit">
-                  <span
-                    v-if="product.price.effective"
-                    :style="
-                      getProductPrice('effective') !== getProductPrice('marked')
-                        ? 'color:' + global_config.props.text_sale_price_color
-                        : 'color:' + global_config.props.text_price_color
-                    "
-                  >
+                  <span v-if="product.price.effective" :style="
+                    getProductPrice('effective') !== getProductPrice('marked')
+                      ? 'color:' + global_config.props.text_sale_price_color
+                      : 'color:' + global_config.props.text_price_color
+                  ">
                     {{
-                      getListingPrice("effective") ||
-                      getProductPrice("effective")
-                    }}</span
-                  >
+  getListingPrice("effective") ||
+  getProductPrice("effective")
+                    }}</span>
                 </span>
-                <span
-                  class="regular-xxxs text-seperator"
-                  v-if="
-                    getProductPrice('effective') !== getProductPrice('marked')
-                  "
-                ></span>
-                <span
-                  :style="
-                    'color:' +
-                    global_config.props.text_strikethrough_price_color
-                  "
-                  class="strike-through regular-xxxs cl-DustyGray2"
-                  v-if="
-                    getProductPrice('effective') !== getProductPrice('marked')
-                  "
-                >
+                <span class="regular-xxxs text-seperator" v-if="
+                  getProductPrice('effective') !== getProductPrice('marked')
+                "></span>
+                <span :style="
+                  'color:' +
+                  global_config.props.text_strikethrough_price_color
+                " class="strike-through regular-xxxs cl-DustyGray2" v-if="
+  getProductPrice('effective') !== getProductPrice('marked')
+">
                   {{ getListingPrice("marked") || getProductPrice("marked") }}
                 </span>
               </div>
@@ -194,8 +166,8 @@ export default {
       if (this.product.price) {
         return this.product.price[key].min !== this.product.price[key].max
           ? this.$options.filters.currencyformat(this.product.price[key].min) +
-              " - " +
-              this.$options.filters.currencyformat(this.product.price[key].max)
+          " - " +
+          this.$options.filters.currencyformat(this.product.price[key].max)
           : this.$options.filters.currencyformat(this.product.price[key].min);
       }
       return "";
@@ -243,6 +215,7 @@ export default {
 .opacity-card {
   opacity: 0.5;
 }
+
 /deep/.imgClass {
   .fy__img {
     border-radius: 2px;
@@ -281,76 +254,90 @@ export default {
   .product-image {
     border-radius: 0;
     overflow: hidden;
-    // min-height: 286px;
-    height: 302px;
+    min-height: 286px; //dipanshu
+    // height: 302px; //dipanshu
     display: flex;
     align-items: center;
     justify-content: center;
+
     @media @mobile {
       height: 242px;
     }
+
     @media @sm-mobile {
       height: 242px;
     }
   }
 }
+
 .infinite-list {
   .product-image {
     min-height: 386px;
+
     @media @mobile {
       height: unset;
       min-height: 300px;
     }
+
     @media @sm-mobile {
       height: unset;
       min-height: 255px;
     }
   }
 }
+
 .wishlist-container {
   width: 20%;
   height: 10%;
   position: absolute;
   top: 0;
   display: block;
-  left: 0;
+  // left: 0; dipanshu
   z-index: 1;
+  left: unset;
+  right: 14%;
   padding: 10px 0;
   cursor: pointer;
 }
+
 .discount-container {
   position: absolute;
   bottom: 27%;
   color: white;
   width: 100%;
   height: 25px;
+
   @media @mobile {
     bottom: 32%;
   }
 }
+
 .discount {
-  background: url("../../assets/images/special-badge.png")
-    bottom left no-repeat;
+  background: url("../../assets/images/special-badge.png") bottom left no-repeat;
 }
+
 .special-offer-text {
   text-align: left;
   line-height: 25px;
   padding-left: 8px;
 }
+
 .out-of-stock-container {
   position: absolute;
   bottom: 27%;
   color: red;
   width: 100%;
   height: 25px;
+
   @media @mobile {
     bottom: 32%;
   }
 }
+
 .out-of-stock {
-  background: url("../../assets/images/special-badge-white.png")
-    bottom left no-repeat;
+  background: url("../../assets/images/special-badge-white.png") bottom left no-repeat;
 }
+
 .out-of-stock-text {
   text-align: left;
   line-height: 25px;
@@ -361,6 +348,7 @@ export default {
   // padding: 8px 0 0 6px;
   display: block;
 }
+
 .wrap-text {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -368,19 +356,22 @@ export default {
   height: 1.2em;
   white-space: nowrap;
 }
+
 .card-desc {
   margin-top: 10px;
   text-overflow: ellipsis;
   overflow: hidden;
   width: 100%;
-  white-space: nowrap;
+  // white-space: nowrap;  //dipanshu
   padding: 5px 10px 5px 10px;
   box-sizing: border-box;
+
   .ukt-title {
     font-weight: bold;
     // color: #41434C;
     font-size: 14px;
   }
+
   .info {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -393,20 +384,24 @@ export default {
     -webkit-box-orient: vertical;
     line-height: normal;
   }
+
   .price {
     text-align: left;
     padding: 5px 0;
   }
 }
+
 .text-seperator {
   padding: 0 5px;
 }
+
 .rupeeSymbol {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 10px;
   color: inherit;
   padding: 0 2px 0 0;
 }
+
 .cl-Profit {
   // color: #fb406b;
 }
@@ -414,6 +409,7 @@ export default {
 .strike-through {
   text-decoration: line-through;
 }
+
 .disable-cursor {
   cursor: not-allowed !important;
 }

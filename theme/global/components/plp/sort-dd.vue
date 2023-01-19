@@ -86,19 +86,20 @@ export default {
 
 .items {
   .dd-label {
-    width: 100px;
+    // width: 100px;
+    width: 65px;
   }
   .flex-center();
-  margin: auto;
-  width: 60%;
+  // margin: auto;
+  // width: 60%;
   border-right: 1px solid @Gray;
   position: relative;
-  padding: 0 10px;
+  // padding: 0 10px;
   .user-select-none();
   .selected {
     cursor: pointer;
-    margin-left: 10px;
-    width: 280px;
+    // margin-left: 10px;
+    // width: 280px;
     align-items: center;
     justify-content: flex-start;
     display: flex;
@@ -117,8 +118,9 @@ export default {
     top: 32px;
     z-index: @menu;
     margin: auto;
-    left: 30%;
-    width: 280px;
+    // left: 30%;
+    left: 0%;
+    width: 250px;
 
     @media @mobile {
       left: 0px;

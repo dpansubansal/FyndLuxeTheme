@@ -14,7 +14,7 @@
               :style="'color:' + global_config.props.text_heading_link_color"
               class="section-heading"
             >
-              {{ page_config.props.heading }}
+              on work {{ page_config.props.heading }}
             </div>
           </div>
           <group-list

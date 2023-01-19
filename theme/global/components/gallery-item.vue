@@ -4,11 +4,13 @@
       <div class="common-card">
         <section>
           <!-- <div :style="`background: url(${block.props.image.value}) center center / cover no-repeat;width: 100%;height:100%`" v-if="block.props.image.value">
-          </div>  -->
+          </div>  --> 
           <emerge-image
             v-if="block.props.image.value"
             :src="block.props.image.value"
             :sources="[{width: 540}]"
+            :asp_ratio="asp_ratio"
+            :ishover="ishover"
           />
           <fdk-placeholder v-else :type="'image'" />
         </section>
@@ -34,6 +36,12 @@ export default {
     block: {
       type: Object,
     },
+    asp_ratio:{
+      type:String,
+    },
+    ishover:{
+      type:String,
+    }
   },
 };
 </script>

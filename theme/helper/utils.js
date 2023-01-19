@@ -64,6 +64,15 @@ export const detectMobileWidth = () => {
         }
     }
 };
+export const detect480Width = () => {
+    if (isBrowser) {
+        if (window && window.screen.width <= 480) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
 
 export const copyToClipboard = (str) => {
     const el = document.createElement("textarea"); // Create a <textarea> element

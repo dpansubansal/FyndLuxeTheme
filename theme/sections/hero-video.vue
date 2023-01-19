@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="overlay__content center-center">
-          <div class="overlay__color" :style="`background-color:black ; opacity:0.6`"></div>
+          <div class="overlay__color"></div>
           <div class="overlay__content--text">
             <div>
               <div @click="playMyVideo" id="play_button" style="justify-content: center;" class="play-button"
@@ -39,10 +39,10 @@
             <div class="overlay__text" v-if="
               settings.props.heading.value || settings.props.description.value
             ">
-              <h2 v-if="settings.props.heading.value" :style="`color:white;`">
+              <h2 v-if="settings.props.heading.value" class="font_head" :style="`color:white;`">
                 {{ settings.props.heading.value }}
               </h2>
-              <p v-if="settings.props.description.value" :style="`color:white;`">
+              <p v-if="settings.props.description.value" class="font_subHead" :style="`color:white;`">
                 <span>{{ settings.props.description.value }} </span>
               </p>
             </div>
@@ -51,6 +51,16 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="overlay480" v-if="
+      settings.props.heading.value || settings.props.description.value
+    ">
+      <h2 class="font_head" v-if="settings.props.heading.value" :style="`color:white;`">
+        {{ settings.props.heading.value }}
+      </h2>
+      <p class="font_subHead" v-if="settings.props.description.value" :style="`color:white;`">
+        <span>{{ settings.props.description.value }} </span>
+      </p>
     </div>
   </div>
 </template>
@@ -249,10 +259,10 @@ export default {
       console.log("urlObj is ", urlObj);
       let v = urlObj.pathname.split("/");
       console.log("after split by / v is ", v);
-      v=v[v.indexOf("d")+1];
-      console.log("val of v before gd is",v);
-      v="https://drive.google.com/uc?export=download&id="+v;
-      console.log("val of v after gd is",v);
+      v = v[v.indexOf("d") + 1];
+      console.log("val of v before gd is", v);
+      v = "https://drive.google.com/uc?export=download&id=" + v;
+      console.log("val of v after gd is", v);
       return v;
     },
     onYouTubeIframeAPIReady() {
@@ -341,7 +351,7 @@ export default {
     playMyVideo() {
       if (this.isMp4()) {
         this.playMp4();
-      }  else if (this.isGoogleDrive()) {
+      } else if (this.isGoogleDrive()) {
         this.playGD();
       } else {
         this.playYT();
@@ -370,6 +380,10 @@ export default {
   position: relative;
   height: 100vh;
 
+  @media screen and (max-width: 480px) {
+    height: 226px;
+  }
+
   video {
     height: 100%;
     object-fit: cover;
@@ -396,11 +410,19 @@ export default {
 
   &__content {
     //min-height: 120px;
-    padding: 32px 20px;
+
     position: absolute;
-    width: 637px; //fynd
+    width: 83%; //figma
+    max-width: 637px; //figma
+
+    @media screen and (max-width: 768px) {
+      padding: 0px 0px;
+      width: 83%; //figma
+      max-width: 632px; //figma
+    }
 
     @media screen and (max-width: 480px) {
+      padding: 0px 0px;
       width: 100%;
     }
 
@@ -456,10 +478,14 @@ export default {
       .center-overlay(); //idk
 
       @media screen and (max-width: 768px) {
-        bottom: 10%;
-        left: 50%;
+        //bottom: 10%;
+        //left: 50%;
         transform: translateX(-50%);
-        text-align: center;
+      }
+      @media screen and (max-width: 480px) {
+        //bottom: 10%;
+        //left: 50%;
+        transform: translate(-50%, -50%);
       }
     }
 
@@ -506,28 +532,24 @@ export default {
   }
 
   &__text {
-    margin-bottom: 16px;
+    padding-left: 16px; //figma
+    padding-right: 16px; //figma
+    padding-bottom: 32px;
 
-    h2 {
-      font-size: 30px;
-      line-height: 31px;
-      font-weight: 400;
-
-      @media @mobile {
-        font-size: 16px;
-      }
-
-      margin-bottom: 16px;
+    @media screen and (max-width: 768px) {
+      padding-right: 15px;
+      padding-left: 15px;
     }
 
-    p {
-      font-size: 16px;
-      line-height: 24px;
-
-      @media @mobile {
-        font-size: 12px;
-      }
+    @media screen and (max-width: 480px) {
+      display: none;
+      //padding-right: 28px;
+      //padding-left: 28px;
     }
+
+    //h2 {}
+
+   // p {}
   }
 
   .play-button {
@@ -539,15 +561,95 @@ export default {
       opacity: 0.6;
     }
 
-    margin-bottom: 48px;
+
+    margin-top: 32px;
 
     @media @tablet {
-      margin-bottom: 35px;
+
+      margin-top: 32px;
     }
 
     @media @mobile {
-      margin-bottom: 30px;
+      margin-top: unset;
     }
   }
+
+  .overlay__color {
+    background-color: black;
+    opacity: 0.6;
+
+    @media screen and (max-width: 480px) {
+      background-color: unset;
+    }
+  }
+}
+
+.overlay480 {
+  display: none;
+  padding-right: 28px;
+  padding-left: 28px;
+
+  @media screen and (max-width: 480px) {
+    display: flex;
+    background-color: black;
+    opacity: 0.6;
+    text-align: center;
+    flex-direction: column;
+    padding-bottom: 32px;
+
+  }
+}
+
+.font_head {
+  //styleName: desktop/H2 - 32px Marcellus;
+  font-family: Marcellus;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 36px;
+  letter-spacing: -0.02em;
+  margin-bottom: 19px;
+  margin-top: 32px;
+
+
+  @media @tablet {
+    //styleName: Mobile/H2 - 28 px Marcellus;
+    font-family: Marcellus;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: -0.02em;
+
+  }
+
+  @media @mobile {
+    //styleName: Mobile/H2 - 28 px Marcellus;
+    font-family: Marcellus;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: -0.02em;
+
+  }
+
+}
+
+.font_subHead {
+  //styleName: desktop/B1 - 16 px;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.02em;
+
+  @media @tablet {
+    //styleName: Mobile/B1 - 14px - Inter;
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+
+  }
+
 }
 </style>

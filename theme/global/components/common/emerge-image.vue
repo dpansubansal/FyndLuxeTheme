@@ -1,19 +1,8 @@
 <template>
-  <picture>
-    <source
-      v-for="(source, index) in sources"
-      :key="index"
-      :media="getMedia(source)"
-      :srcset="getUrl(source.width, '.webp')"
-      type="image/webp"
-    />
-    <img
-      class="fy__img"
-      :srcset="fallbackSrcset"
-      :src="getSrc"
-      :alt="alt"
-      @error="onError"
-    />
+  <picture :class="ishover">
+    <source v-for="(source, index) in sources" :key="index" :media="getMedia(source)" :srcset="getUrl(source.width)"
+      type="image/webp" />
+    <img class="fy__img" :srcset="fallbackSrcset" :src="getSrc" :alt="alt" :style="'aspect-ratio:' + asp_ratio" />
   </picture>
 </template>
 
@@ -22,6 +11,13 @@
   height: 100%;
   width: 100%;
   max-width: 100%;
+
+}
+
+.hoverPls:hover>img {
+  transform: scale(1.5);
+  transition-duration: 1s;
+  animation-timing-function: ease-in-out;
 }
 </style>
 
@@ -62,6 +58,14 @@ export default {
       type: String,
       default: "#ffffff",
     },
+    asp_ratio: {
+      type: String,
+      default: "unset",
+    },
+    ishover: {
+      type: String,
+      default: "nohover",
+    },
     src: {
       type: String,
       default: "",
@@ -90,7 +94,12 @@ export default {
   data() {
     return {
       isError: false,
+      //aspRatio: "unset",
     };
+  },
+  mounted() {
+    console.log("my dataaaa", this.asp_ratio);
+    console.log("my hov", this.ishover);
   },
   computed: {
     getSrc() {
@@ -105,9 +114,12 @@ export default {
     },
     fallbackSrcset() {
       let url = this.src;
-      if( this.getImageType.toLowerCase() === 'gif'){
+      if (this.getImageType.toLowerCase() === 'gif') {
         return '';
       }
+      // if( this.getImageType.toLowerCase() === 'jpeg'){
+      //   return '';
+      // }
 
       if (this.isError) {
         url = this.placeholder;
@@ -133,17 +145,17 @@ export default {
       let str = "\/" + key + "\/"
       return url.replace(new RegExp(str), "/resize-w:" + width + "/");
     },
-    getUrl(width, extension) {
+    getUrl(width) {
       let url = this.src;
-      if( this.getImageType.toLowerCase() === 'gif'){
+      if (this.getImageType.toLowerCase() === 'gif') {
         return '';
       }
-      
+
       if (this.isError) {
         url = this.placeholder;
       }
-      const pos = url.lastIndexOf(".");
-      url = url.substr(0, pos < 0 ? url.length : pos) + extension;
+      // const pos = url.lastIndexOf(".");
+      // url = url.substr(0, pos < 0 ? url.length : pos) + extension;
       const key = searchStringInArray(url, IMAGE_SIZES);
       if (key) {
         return this.resizeW(url, key, width);

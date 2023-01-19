@@ -15,7 +15,6 @@
           v-for="(item, index) in cardlist"
           :block="item"
           :key="'gallery-item' + index"
-          
         />
       </template>
       <template v-else-if="show_only_logo">
